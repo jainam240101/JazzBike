@@ -1,0 +1,53 @@
+/** @format */
+
+import { User } from "../../Entities/User";
+import { UserReview } from "../../Entities/User_Review";
+import { v4 as uuidv4 } from "uuid";
+import { createQueryBuilder } from "typeorm";
+
+export const createReviewUtil = async (info: any) => {
+  try {
+    const reporting_user = await User.findOne({
+      where: { id: info.userId },
+    });
+    const refferingUser = await User.findOne({
+      where: {
+        id: info.refers_to,
+      },
+    });
+    return UserReview.create({
+      review_id: uuidv4(),
+      refersTo: refferingUser,
+      saidBy: reporting_user,
+      stars: info.stars,
+      data: info.data,
+    }).save();
+  } catch (error) {
+    throw new Error("The Product could not be created");
+  }
+};
+
+export const updateReviewUtil = async ({ id, data }: any) => {
+  try {
+    const user_review = await UserReview.findOne({
+      where: { id: id },
+    });
+    user_review!["data"] = data;
+    return user_review?.save();
+  } catch (error) {
+    throw new Error("The Product could not be updated");
+  }
+};
+
+export const deleteReviewUtil = async (id: string) => {
+  try {
+    await createQueryBuilder()
+      .delete()
+      .from(UserReview)
+      .where("id = :id", { id: id })
+      .execute();
+    return "Done";
+  } catch (error) {
+    throw new Error("Error Occured while Deleting the Users Review");
+  }
+};

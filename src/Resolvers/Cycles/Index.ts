@@ -1,0 +1,122 @@
+/** @format */
+
+import { isAuth } from "../../Middlewares/isAuth";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
+import { createCycleInput, updateCycleDetails } from "./Inputs";
+import {
+  createCycleUtil,
+  getMyCycles,
+  updateCycleDetailsUtil,
+  deleteCycleUtil,
+} from "./Utils";
+import { CycleResponse } from "../../Types/Response";
+import { MyContext } from "../../Types/Context";
+
+@Resolver()
+export class CycleResolver {
+  @UseMiddleware(isAuth)
+  @Mutation(() => CycleResponse)
+  async addCycle(
+    @Arg("data")
+    { Name, Photos, Price, Specifications }: createCycleInput,
+    @Ctx() ctx: MyContext
+  ) {
+    try {
+      const savedData = await createCycleUtil({
+        Name,
+        Photos,
+        userId: ctx.req.session.userId,
+        Price,
+        Specifications,
+      });
+      return {
+        data: savedData,
+        message: "Fetch Successful",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unsuccessful",
+        error: error.detail,
+      };
+    }
+  }
+
+  @Query(() => CycleResponse)
+  async getCycleDetail(@Arg("id") id: string) {
+    try {
+      const data = await getMyCycles(id);
+      return {
+        data: data,
+        message: "Fetch Successful",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unsuccessful",
+        error: error.detail,
+      };
+    }
+  }
+
+  @UseMiddleware(isAuth)
+  @Mutation(() => CycleResponse)
+  async updateCycle(
+    @Arg("data")
+    { cycleId, Name, Photos, Price, Specifications }: updateCycleDetails,
+    @Ctx() ctx: MyContext
+  ) {
+    try {
+      const data = await updateCycleDetailsUtil({
+        cycleId,
+        userId: ctx.req.session.userId,
+        Name,
+        Photos,
+        Price,
+        Specifications,
+      });
+      return {
+        data: data,
+        message: "Fetch Successful",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unsuccessful",
+        error: error.detail,
+      };
+    }
+  }
+
+  @UseMiddleware(isAuth)
+  @Mutation(() => CycleResponse)
+  async deleteCycle(@Arg("cycleId") cycleId: string, @Ctx() ctx: MyContext) {
+    try {
+      await deleteCycleUtil({
+        cycleId: cycleId,
+        userId: ctx.req.session.userId,
+      });
+      return {
+        data: "Success",
+        message: "Fetch Successful",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unsuccessful",
+        error: null,
+      };
+    }
+  }
+}
