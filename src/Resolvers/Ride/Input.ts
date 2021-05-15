@@ -1,19 +1,30 @@
+/** @format */
+
 import { Field, InputType } from "type-graphql";
 
 @InputType()
-export class changeStatusInput{
-    @Field()
-    ride_id: string
+export class changeStatusInput {
+  @Field({ nullable: true })
+  x_coordinate: number;
 
-    @Field()
-    status:string
+  @Field({ nullable: true })
+  y_coordinate: number;
+
+  @Field()
+  ride_id: string;
+
+  @Field()
+  status: string;
 }
 
 @InputType()
-export class changeCoordinatesInput{
-    @Field()
-    x_coordinate: string
-    
-    @Field()
-    y_coordinate: string
+export class changeCoordinatesInput {
+  @Field()
+  ride_id: string;
+
+  @Field()
+  x_coordinate: number;
+
+  @Field()
+  y_coordinate: number;
 }

@@ -44,13 +44,13 @@ export class Ride extends BaseEntity {
   @JoinColumn({ referencedColumnName: "id", name: "rider_id" })
   rider: User;
 
-  @Field(() => [Coordinates], { nullable: true })
+  @Field(() => Coordinates, { nullable: true })
   @Column({ type: "simple-json", nullable: true })
-  location: { Coordinates: Coordinates[] };
+  location: Coordinates;
 
   @Field()
-  @Column()
-  status: String; //Accepted Rejected Completed Waiting
+  @Column({ default: "Waiting" })
+  status: String; //Waiting Accepted Rejected Completed Cancelled 
 
   @Field(() => Date, { nullable: true })
   @Column({ type: "timestamp", nullable: true })
