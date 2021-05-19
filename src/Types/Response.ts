@@ -6,11 +6,35 @@ import { UserReview } from "../Entities/User_Review";
 import { CycleReview } from "../Entities/Cycle_Review";
 import { Cycles } from "../Entities/Cycles";
 import { Ride } from "../Entities/Ride";
+import { Chats } from "../Entities/Chats";
 
 @ObjectType()
 export class ResponseObject {
   @Field(() => User, { nullable: true })
   data: User | null | String;
+
+  @Field()
+  message: string;
+
+  @Field(() => String, { nullable: true })
+  error: string | null;
+}
+
+@ObjectType()
+export class multipleUsers {
+  @Field(() => [User], { nullable: true })
+  data: User[];
+
+  @Field()
+  message: string;
+
+  @Field(() => String, { nullable: true })
+  error: string | null;
+}
+@ObjectType()
+export class multipleChats {
+  @Field(() => [Chats], { nullable: true })
+  data: Chats[];
 
   @Field()
   message: string;
@@ -59,6 +83,17 @@ export class CycleReviewResponse {
 export class RideResponse {
   @Field(() => Ride, { nullable: true })
   data: Ride | null | String;
+
+  @Field()
+  message: string;
+
+  @Field(() => String, { nullable: true })
+  error: string | null;
+}
+@ObjectType()
+export class ChatResponse {
+  @Field(() => Chats, { nullable: true })
+  data: Chats | null | String;
 
   @Field()
   message: string;

@@ -17,6 +17,7 @@ import { UserReviewsResolver } from "./Resolvers/User Reviews/Index";
 import { CycleResolver } from "./Resolvers/Cycles/Index";
 import { CycleReviewResolvers } from "./Resolvers/Cycle Reviews/Index";
 import { RideResolvers } from "./Resolvers/Ride/Index";
+import { ChatResolver } from "./Resolvers/Chats/Index";
 
 declare module "express-session" {
   export interface Session {
@@ -30,6 +31,7 @@ const main = async () => {
   const schema = await buildSchema({
     resolvers: [
       HelloResolver,
+      ChatResolver,
       UserResolvers,
       LoginResolver,
       UserReviewsResolver,

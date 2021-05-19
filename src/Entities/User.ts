@@ -51,7 +51,7 @@ export class User extends BaseEntity {
   })
   @JoinColumn({ referencedColumnName: "ride_id" })
   ride: Ride[];
-  
+
   @Field(() => [Cycles], { nullable: true })
   @OneToMany(() => Cycles, (cycles) => cycles.owner, {
     onDelete: "CASCADE",
