@@ -8,11 +8,13 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import { CreateUserInput, updateUserInput } from "./Inputs";
+import { CreateUserInput, searchUsersInput, updateUserInput } from "./Inputs";
 import {
   createUserUtil,
   deleteUserUtil,
+  findSpecificUserUtil,
   MeUtil,
+  searchUsersUtil,
   updateUserUtil,
 } from "./Utils/Utils";
 import { ResponseObject } from "../../Types/Response";
@@ -25,7 +27,7 @@ export class UserResolvers {
   async createUser(
     @Arg("input")
     { Name, PhoneNumber, Email, Address, Password }: CreateUserInput
-  ): Promise<ResponseObject | undefined> {
+  ) {
     try {
       const data = await createUserUtil({
         Address,
@@ -35,7 +37,7 @@ export class UserResolvers {
         PhoneNumber,
       });
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };
@@ -54,7 +56,7 @@ export class UserResolvers {
     try {
       const data = await MeUtil(ctx.req.session.userId);
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };
@@ -84,7 +86,7 @@ export class UserResolvers {
         Password,
       });
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };
@@ -104,6 +106,42 @@ export class UserResolvers {
       await deleteUserUtil(ctx.req.session!.userId);
       return {
         data: null,
+        message: "Fetch Successful",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unuccessful",
+        error: `Error : ${error.message}`,
+      };
+    }
+  }
+
+  @Query(() => ResponseObject)
+  async searchUsers(@Arg("data") { name, limit, pageNo }: searchUsersInput) {
+    try {
+      const SearchData = await searchUsersUtil({ name, limit, pageNo });
+      return {
+        data: [SearchData],
+        message: "Fetch Successful",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unuccessful",
+        error: `Error : ${error.message}`,
+      };
+    }
+  }
+
+  @Query(() => ResponseObject)
+  async searchSpecificUser(@Arg("userId") userId: string) {
+    try {
+      const data = await findSpecificUserUtil(userId);
+      return {
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };

@@ -18,6 +18,7 @@ import { CycleResolver } from "./Resolvers/Cycles/Index";
 import { CycleReviewResolvers } from "./Resolvers/Cycle Reviews/Index";
 import { RideResolvers } from "./Resolvers/Ride/Index";
 import { ChatResolver } from "./Resolvers/Chats/Index";
+import { LogisticsResolver } from "./Resolvers/Logistics/Index";
 
 declare module "express-session" {
   export interface Session {
@@ -37,7 +38,8 @@ const main = async () => {
       UserReviewsResolver,
       CycleResolver,
       CycleReviewResolvers,
-      RideResolvers
+      RideResolvers,
+      LogisticsResolver,
     ],
   });
   const apolloserver = new ApolloServer({

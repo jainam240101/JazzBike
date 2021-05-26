@@ -1,8 +1,15 @@
 /** @format */
 
 import { isAuth } from "../../Middlewares/isAuth";
-import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from "type-graphql";
-import { sendMessageInput, updateMessageInput } from "./Input";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
+import { findMyMessageInput, sendMessageInput, updateMessageInput } from "./Input";
 import {
   createMessageUtil,
   deleteMessageUtil,
@@ -11,11 +18,7 @@ import {
   updateMessageUtil,
 } from "./Utils";
 import { MyContext } from "../../Types/Context";
-import {
-  ChatResponse,
-  multipleChats,
-  multipleUsers,
-} from "../../Types/Response";
+import { ChatResponse, ResponseObject } from "../../Types/Response";
 
 @Resolver()
 export class ChatResolver {
@@ -32,7 +35,7 @@ export class ChatResolver {
         sendingTo,
       });
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successfull",
         error: null,
       };
@@ -58,7 +61,7 @@ export class ChatResolver {
         message,
       });
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successfull",
         error: null,
       };
@@ -75,12 +78,12 @@ export class ChatResolver {
   @Mutation(() => ChatResponse)
   async deleteMessage(@Arg("chat_id") chat_id: string, @Ctx() ctx: MyContext) {
     try {
-      const data = await deleteMessageUtil({
+      await deleteMessageUtil({
         userId: ctx.req.session.userId,
         chat_id,
       });
       return {
-        data: data,
+        data: null,
         message: "Fetch Successfull",
         error: null,
       };
@@ -94,10 +97,15 @@ export class ChatResolver {
   }
 
   @UseMiddleware(isAuth)
-  @Mutation(() => multipleChats)
-  async findMyMessages(@Arg("id") id: string, @Ctx() ctx: MyContext) {
+  @Query(() => ChatResponse)
+  async findMyMessages(@Arg("data") { id,limit,pageNo}:findMyMessageInput, @Ctx() ctx: MyContext) {
     try {
-      const data = await getMyMessages({ userId: ctx.req.session.userId, id });
+      const data = await getMyMessages({
+        userId: ctx.req.session.userId,
+        id,
+        limit,
+        pageNo,
+      });
       return {
         data: data,
         message: "Fetch Successful",
@@ -112,7 +120,7 @@ export class ChatResolver {
     }
   }
   @UseMiddleware(isAuth)
-  @Mutation(() => multipleUsers)
+  @Query(() => ResponseObject)
   async getReceipients(@Ctx() ctx: MyContext) {
     try {
       const data = await getReceipientsUtil({ userId: ctx.req.session.userId });

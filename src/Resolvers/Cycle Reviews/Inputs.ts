@@ -10,3 +10,15 @@ export class createCycleReviewInput {
   @Field()
   data: string;
 }
+
+@InputType()
+export class getCycleReviewsInput{
+  @Field()
+  cycleId:string
+ 
+  @Field()
+  limit:number
+ 
+  @Field()
+  pageNo:number
+}

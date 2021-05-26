@@ -1,13 +1,27 @@
 /** @format */
 
 import { isAuth } from "../../Middlewares/isAuth";
-import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
 import {
   createReviewInput,
   deleteUserReviewInput,
+  getReviewsInput,
   updateUserReviewInput,
 } from "./Inputs";
-import { createReviewUtil, deleteReviewUtil, updateReviewUtil } from "./Utils";
+import {
+  createReviewUtil,
+  reviewsForMeUtil,
+  deleteReviewUtil,
+  reviewsByMeUtil,
+  updateReviewUtil,
+} from "./Utils";
 import { MyContext } from "../../Types/Context";
 import { UserReviewResponse } from "../../Types/Response";
 
@@ -27,7 +41,7 @@ export class UserReviewsResolver {
         userId: ctx.req.session!.userId,
       });
       return {
-        data: saveddata,
+        data: [saveddata],
         message: "Fetch Successfull",
         error: null,
       };
@@ -49,7 +63,7 @@ export class UserReviewsResolver {
         id,
       });
       return {
-        data: savedData,
+        data: [savedData],
         message: "Fetch Successfull",
         error: null,
       };
@@ -68,7 +82,53 @@ export class UserReviewsResolver {
     try {
       const savedData = await deleteReviewUtil(id);
       return {
-        data: savedData,
+        data: [savedData],
+        message: "Fetch Successfull",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unsuccessfull",
+        error: `Error : ${error.message}`,
+      };
+    }
+  }
+
+  @UseMiddleware(isAuth)
+  @Query(() => UserReviewResponse)
+  async rebiewsByMe(@Arg("data") { limit, pageNo, userId }: getReviewsInput) {
+    try {
+      const data = await reviewsByMeUtil({
+        userId: userId,
+        limit,
+        pageNo,
+      });
+      return {
+        data: data,
+        message: "Fetch Successfull",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unsuccessfull",
+        error: `Error : ${error.message}`,
+      };
+    }
+  }
+
+  @UseMiddleware(isAuth)
+  @Query(() => UserReviewResponse)
+  async reviewsForMe(@Arg("data") { limit, pageNo, userId }: getReviewsInput) {
+    try {
+      const data = await reviewsForMeUtil({
+        userId: userId,
+        limit,
+        pageNo,
+      });
+      return {
+        data: data,
         message: "Fetch Successfull",
         error: null,
       };

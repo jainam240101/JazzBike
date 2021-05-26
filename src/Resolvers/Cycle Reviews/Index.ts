@@ -9,7 +9,7 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import { createCycleReviewInput } from "./Inputs";
+import { createCycleReviewInput, getCycleReviewsInput } from "./Inputs";
 import {
   createCycleReviewUtil,
   deleteReviewUtil,
@@ -18,7 +18,6 @@ import {
 } from "./Utils";
 import { CycleReviewResponse } from "../../Types/Response";
 import { MyContext } from "../../Types/Context";
-import { CycleReview } from "../../Entities/Cycle_Review";
 
 @Resolver()
 export class CycleReviewResolvers {
@@ -35,7 +34,7 @@ export class CycleReviewResolvers {
         userId: ctx.req.session.userId,
       });
       return {
-        data: savedData,
+        data: [savedData],
         message: "Fetch Successful",
         error: null,
       };
@@ -49,10 +48,24 @@ export class CycleReviewResolvers {
   }
 
   @UseMiddleware(isAuth)
-  @Query(() => [CycleReview])
-  async getAllReviews(@Arg("id") id: string) {
-    const data = await getAllReviewsUtil({ cycleId: id });
-    return data;
+  @Query(() => CycleReviewResponse)
+  async getCycleReviews(
+    @Arg("data") { pageNo, limit, cycleId }: getCycleReviewsInput
+  ) {
+    try {
+      const data = await getAllReviewsUtil({ pageNo, limit, cycleId });
+      return {
+        data: data,
+        message: "Fetch Successful",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unsuccessful",
+        error: `Error : ${error.detail}`,
+      };
+    }
   }
 
   @UseMiddleware(isAuth)
@@ -69,7 +82,7 @@ export class CycleReviewResolvers {
         data: review,
       });
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };

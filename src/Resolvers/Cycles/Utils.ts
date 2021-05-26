@@ -1,5 +1,6 @@
 /** @format */
 
+import { ILike } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 import { Cycles } from "../../Entities/Cycles";
 import { User } from "../../Entities/User";
@@ -83,5 +84,22 @@ export const deleteCycleUtil = async (info: any) => {
     return "Success";
   } catch (error) {
     throw new Error("Error Occured while Deleting a User");
+  }
+};
+
+export const searchCycleUtil = async (name: string) => {
+  try {
+    const data = await Cycles.find({
+      relations: ["owner"],
+      where: {
+        Name: ILike(`%${name}%`),
+      },
+      order: {
+        createdAt: "DESC",
+      },
+    });
+    return data;
+  } catch (error) {
+    throw new Error("Could not fetch Data");
   }
 };

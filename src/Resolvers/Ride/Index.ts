@@ -1,11 +1,19 @@
 /** @format */
 
 import { isAuth } from "../../Middlewares/isAuth";
-import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
 import { MyContext } from "../../Types/Context";
 import {
   changeCoordinatesUtil,
   changeStatusUtil,
+  getRideDetailUtil,
   initiateRideUtil,
 } from "./Utils";
 import { RideResponse } from "../../Types/Response";
@@ -22,7 +30,7 @@ export class RideResolvers {
         userId: ctx.req.session.userId,
       });
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };
@@ -51,7 +59,7 @@ export class RideResolvers {
         userId: ctx.req.session.userId,
       });
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };
@@ -79,7 +87,7 @@ export class RideResolvers {
         userId: ctx.req.session.userId,
       });
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };
@@ -91,4 +99,25 @@ export class RideResolvers {
       };
     }
   }
+
+  @UseMiddleware(isAuth)
+  @Query(() => RideResponse)
+  async getRideDetail(@Arg("rideId") rideId: string) {
+    try {
+      const data = await getRideDetailUtil(rideId);
+      return {
+        data: [data],
+        message: "Fetch Successful",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unsuccessful",
+        error: `Error : ${error.message}`,
+      };
+    }
+  }
+
+  
 }

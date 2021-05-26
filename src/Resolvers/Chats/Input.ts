@@ -19,3 +19,15 @@ export class updateMessageInput {
   @Field()
   message: string;
 }
+
+@InputType()
+export class findMyMessageInput {
+  @Field()
+  id: string;
+
+  @Field()
+  pageNo: number;
+
+  @Field()
+  limit: number;
+}

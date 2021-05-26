@@ -51,3 +51,41 @@ export const deleteReviewUtil = async (id: string) => {
     throw new Error("Error Occured while Deleting the Users Review");
   }
 };
+
+export const reviewsByMeUtil = async ({ userId, limit, pageNo }: any) => {
+  try {
+    var skip = (pageNo - 1) * limit;
+    const data = await UserReview.find({
+      where: {
+        saidBy: userId,
+      },
+      take: limit,
+      skip: skip,
+      order: {
+        createdAt: "DESC",
+      },
+    });
+    return data;
+  } catch (error) {
+    throw new Error("Could not find data");
+  }
+};
+
+export const reviewsForMeUtil = async ({ userId, limit, pageNo }: any) => {
+  try {
+    var skip = (pageNo - 1) * limit;
+    const data = await UserReview.find({
+      where: {
+        refersTo: userId,
+      },
+      take: limit,
+      skip: skip,
+      order: {
+        createdAt: "DESC",
+      },
+    });
+    return data;
+  } catch (error) {
+    throw new Error("Could not find data");
+  }
+};

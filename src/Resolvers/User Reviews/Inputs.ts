@@ -28,3 +28,15 @@ export class deleteUserReviewInput {
   @Field()
   id: string;
 }
+
+@InputType()
+export class getReviewsInput {
+  @Field()
+  userId: string;
+
+  @Field()
+  pageNo: number;
+
+  @Field()
+  limit: number;
+}

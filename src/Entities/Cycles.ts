@@ -57,7 +57,7 @@ export class Cycles extends BaseEntity {
   @Column({ type: "simple-array" })
   Photos: string[];
 
-  @Field(() => [Ride])
+  // @Field(() => [Ride])
   @OneToMany(() => Ride, (ride) => ride.cycle, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
@@ -68,7 +68,7 @@ export class Cycles extends BaseEntity {
   @Field()
   @CreateDateColumn()
   createdAt: Date;
-  
+
   @Field()
   @UpdateDateColumn()
   updatedAt: Date;

@@ -4,27 +4,32 @@ import { User } from "../Entities/User";
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import bcryptjs from "bcryptjs";
 import { MyContext } from "../Types/Context";
+import { ApolloError } from "apollo-server-errors";
 
 @Resolver()
 export class LoginResolver {
-  @Mutation(() => String, { nullable: true })
+  @Mutation(() => User, { nullable: true })
   async Login(
     @Arg("Email") email: string,
     @Arg("Password") password: string,
     @Ctx() ctx: MyContext
   ) {
-    const user = await User.findOne({ where: { Email: email } });
-    if (!user) {
-      return null;
-    }
-    const valid = await bcryptjs.compare(password, user.Password);
-    if (!valid) {
-      return null;
-    }
-    // console.log("The user is  ", user);
+    try {
+      const user = await User.findOne({ where: { Email: email } });
+      if (!user) {
+        throw new ApolloError("Invalid Credentials");
+      }
+      const valid = await bcryptjs.compare(password, user.Password);
+      if (!valid) {
+        throw new ApolloError("Invalid Credentials");
+      }
+      // console.log("The user is  ", user);
 
-    ctx.req.session!.userId = user.id;
-    return "Working";
+      ctx.req.session!.userId = user.id;
+      return user;
+    } catch (error) {
+      throw new ApolloError("Invalid Credentials");
+    }
   }
 
   @Mutation(() => String, { nullable: true })

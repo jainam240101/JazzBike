@@ -31,14 +31,17 @@ export const createMessageUtil = async ({
   }
 };
 
-export const getMyMessages = async ({ userId, id }: any) => {
+export const getMyMessages = async ({ userId, id, limit, pageNo }: any) => {
   try {
+     var skip = (pageNo - 1) * limit;
     const data = await Chats.find({
       relations: ["sender", "receiver"],
       where: [
         { sender: userId, receiver: id },
         { sender: id, receiver: userId },
       ],
+      take: limit,
+      skip: skip,
       order: {
         createdAt: "DESC",
       },

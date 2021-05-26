@@ -25,13 +25,17 @@ export const createCycleReviewUtil = async ({ cycleId, data, userId }: any) => {
   }
 };
 
-export const getAllReviewsUtil = async ({ cycleId }: any) => {
+export const getAllReviewsUtil = async ({ cycleId, limit, pageNo }: any) => {
   try {
+    var skip = (pageNo - 1) * limit;
     const review_data = await CycleReview.find({
       relations: ["cycle", "reviewer"],
       where: {
         cycle: cycleId,
       },
+      take: limit,
+      skip: skip,
+      order: { createdAt: "DESC" },
     });
     return review_data;
   } catch (error) {
@@ -71,6 +75,7 @@ export const deleteReviewUtil = async ({ userId, reviewId }: any) => {
     await CycleReview.delete({
       review_id: reviewId,
     });
+    return "Success";
   } catch (error) {
     throw new Error("Failed To Delete");
   }

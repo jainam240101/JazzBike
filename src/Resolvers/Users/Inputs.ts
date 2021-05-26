@@ -48,3 +48,15 @@ export class updateUserInput {
   @IsString()
   Address: string;
 }
+
+@InputType()
+export class searchUsersInput {
+  @Field()
+  name: string;
+
+  @Field()
+  pageNo: number;
+
+  @Field()
+  limit: number;
+}

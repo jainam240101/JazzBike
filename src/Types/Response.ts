@@ -10,31 +10,8 @@ import { Chats } from "../Entities/Chats";
 
 @ObjectType()
 export class ResponseObject {
-  @Field(() => User, { nullable: true })
-  data: User | null | String;
-
-  @Field()
-  message: string;
-
-  @Field(() => String, { nullable: true })
-  error: string | null;
-}
-
-@ObjectType()
-export class multipleUsers {
   @Field(() => [User], { nullable: true })
-  data: User[];
-
-  @Field()
-  message: string;
-
-  @Field(() => String, { nullable: true })
-  error: string | null;
-}
-@ObjectType()
-export class multipleChats {
-  @Field(() => [Chats], { nullable: true })
-  data: Chats[];
+  data: User[] | null | String;
 
   @Field()
   message: string;
@@ -45,8 +22,8 @@ export class multipleChats {
 
 @ObjectType()
 export class UserReviewResponse {
-  @Field(() => UserReview, { nullable: true })
-  data: UserReview | null | String;
+  @Field(() => [UserReview], { nullable: true })
+  data: UserReview[] | null | String;
 
   @Field()
   message: string;
@@ -57,8 +34,8 @@ export class UserReviewResponse {
 
 @ObjectType()
 export class CycleResponse {
-  @Field(() => Cycles, { nullable: true })
-  data: Cycles | null | String;
+  @Field(() => [Cycles], { nullable: true })
+  data: Cycles[] | null | String;
 
   @Field()
   message: string;
@@ -69,8 +46,8 @@ export class CycleResponse {
 
 @ObjectType()
 export class CycleReviewResponse {
-  @Field(() => CycleReview, { nullable: true })
-  data: CycleReview | null | String;
+  @Field(() => [CycleReview], { nullable: true })
+  data: CycleReview[] | null | String;
 
   @Field()
   message: string;
@@ -81,8 +58,8 @@ export class CycleReviewResponse {
 
 @ObjectType()
 export class RideResponse {
-  @Field(() => Ride, { nullable: true })
-  data: Ride | null | String;
+  @Field(() => [Ride], { nullable: true })
+  data: Ride[] | null | String;
 
   @Field()
   message: string;
@@ -92,8 +69,23 @@ export class RideResponse {
 }
 @ObjectType()
 export class ChatResponse {
-  @Field(() => Chats, { nullable: true })
-  data: Chats | null | String;
+  @Field(() => [Chats], { nullable: true })
+  data: Chats[] | null | String;
+
+  @Field()
+  message: string;
+
+  @Field(() => String, { nullable: true })
+  error: string | null;
+}
+
+@ObjectType()
+export class ProfitResponse {
+  @Field(() => [Number])
+  Profit: Number[];
+
+  @Field(() => [Cycles], { nullable: true })
+  Cycles: Cycles[];
 
   @Field()
   message: string;

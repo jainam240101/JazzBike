@@ -15,6 +15,7 @@ import {
   getMyCycles,
   updateCycleDetailsUtil,
   deleteCycleUtil,
+  searchCycleUtil,
 } from "./Utils";
 import { CycleResponse } from "../../Types/Response";
 import { MyContext } from "../../Types/Context";
@@ -37,7 +38,7 @@ export class CycleResolver {
         Specifications,
       });
       return {
-        data: savedData,
+        data: [savedData],
         message: "Fetch Successful",
         error: null,
       };
@@ -55,7 +56,7 @@ export class CycleResolver {
     try {
       const data = await getMyCycles(id);
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };
@@ -85,7 +86,7 @@ export class CycleResolver {
         Specifications,
       });
       return {
-        data: data,
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };
@@ -108,6 +109,24 @@ export class CycleResolver {
       });
       return {
         data: "Success",
+        message: "Fetch Successful",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unsuccessful",
+        error: null,
+      };
+    }
+  }
+
+  @Query(() => CycleResponse)
+  async searchCycles(@Arg("data") data: string) {
+    try {
+      const searchedData = await searchCycleUtil(data);
+      return {
+        data: searchedData,
         message: "Fetch Successful",
         error: null,
       };

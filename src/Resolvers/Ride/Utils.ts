@@ -12,8 +12,42 @@ import {
   rideStarted,
 } from "./Helper";
 
+const rideValidation = async ({ userId, cycleId }: any) => {
+  try {
+    const checkIfRideAlreadygoing: Ride | undefined = await Ride.findOne({
+      where: [
+        {
+          rider: userId,
+          status: "Started",
+        },
+        {
+          rider: userId,
+          status: "Accepted",
+        },
+        {
+          rider: userId,
+          status: "Waiting",
+        },
+      ],
+    });
+    const checkIfCycleIsAvailable: Cycles | undefined = await Cycles.findOne({
+      where: {
+        cycle_id: cycleId,
+        currentlyInUse: true,
+      },
+    });
+    if (checkIfCycleIsAvailable) {
+      throw new Error("A ride already in Progress");
+    }
+    if (checkIfRideAlreadygoing) {
+      throw new Error("A ride already in Progress");
+    }
+  } catch (error) {}
+};
+
 export const initiateRideUtil = async ({ cycleId, userId }: any) => {
   try {
+    await rideValidation({ cycleId, userId });
     const user = await User.findOne({
       where: { id: userId },
     });
@@ -125,5 +159,19 @@ export const changeCoordinatesUtil = async ({
     return ride.save();
   } catch (error) {
     throw new Error(error.message);
+  }
+};
+
+export const getRideDetailUtil = async (id: string) => {
+  try {
+    const data = await Ride.findOne({
+      relations: ["cycle", "rider"],
+      where: {
+        ride_id: id,
+      },
+    });
+    return data;
+  } catch (error) {
+    throw new Error("No Such Ride");
   }
 };

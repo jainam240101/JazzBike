@@ -4,6 +4,7 @@ import { User } from "../../../Entities/User";
 import bcrypt from "bcryptjs";
 import { createUserInterface } from "./Interface";
 import { v4 as uuidv4 } from "uuid";
+import { ILike } from "typeorm";
 
 export const createUserUtil = async ({
   Address,
@@ -31,7 +32,6 @@ export const createUserUtil = async ({
 export const MeUtil = async (id: any) => {
   try {
     const UserData: any = await User.findOne({
-      relations: ["reviews_received", "reviews_byme", "cycles"],
       where: {
         id: id,
       },
@@ -79,5 +79,34 @@ export const deleteUserUtil = async (id: any) => {
   } catch (error) {
     console.log(error);
     throw new Error("Error Occured while Deleting a User");
+  }
+};
+
+export const searchUsersUtil = async ({ name, limit, pageNo }: any) => {
+  try {
+    var skip = (pageNo - 1) * limit;
+    const data = await User.find({
+      where: {
+        Name: ILike(`%${name}%`),
+      },
+      take: limit,
+      skip: skip,
+    });
+    return data;
+  } catch (error) {
+    throw new Error("Could not fetch Data");
+  }
+};
+
+export const findSpecificUserUtil = async (userId: string) => {
+  try {
+    const UserData: any = await User.findOne({
+      where: {
+        id: userId,
+      },
+    });
+    return UserData;
+  } catch (error) {
+    throw new Error("Could not fetch Data");
   }
 };

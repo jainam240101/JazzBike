@@ -43,7 +43,6 @@ export class User extends BaseEntity {
   @Column({ length: 1000 })
   Address: String;
 
-  @Field(() => [Ride], { nullable: true })
   @OneToMany(() => Ride, (ride) => ride.rider, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
@@ -52,7 +51,6 @@ export class User extends BaseEntity {
   @JoinColumn({ referencedColumnName: "ride_id" })
   ride: Ride[];
 
-  @Field(() => [Cycles], { nullable: true })
   @OneToMany(() => Cycles, (cycles) => cycles.owner, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
@@ -61,7 +59,6 @@ export class User extends BaseEntity {
   @JoinColumn({ referencedColumnName: "cycle_id" })
   cycles: Cycles[];
 
-  @Field(() => [UserReview], { nullable: true })
   @OneToMany(() => UserReview, (UserReview) => UserReview.saidBy, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
@@ -70,7 +67,6 @@ export class User extends BaseEntity {
   @JoinColumn({ referencedColumnName: "review_id" })
   reviews_byme: UserReview[];
 
-  @Field(() => [UserReview], { nullable: true })
   @OneToMany(() => UserReview, (UserReview) => UserReview.refersTo, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
@@ -79,7 +75,6 @@ export class User extends BaseEntity {
   @JoinColumn({ referencedColumnName: "review_id" })
   reviews_received: UserReview[];
 
-  @Field(() => [CycleReview], { nullable: true })
   @OneToMany(() => CycleReview, (cycleReview) => cycleReview.reviewer, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",

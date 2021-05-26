@@ -21,7 +21,7 @@ export const rideAccepted = async ({ ride_id, userId }: any) => {
     await cycle.save();
     ride["status"] = "Accepted";
     return ride.save();
-  } catch (error) {
+  } catch (error) {``
     throw new Error(error.message);
   }
 };
