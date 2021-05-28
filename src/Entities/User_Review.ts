@@ -22,12 +22,12 @@ export class UserReview extends BaseEntity {
   review_id: string;
 
   @Field(() => User, { nullable: true })
-  @ManyToOne(() => User, (user) => user.reviews_byme, { eager: true })
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ referencedColumnName: "id", name: "saidBy_id" })
   saidBy: User;
 
   @Field(() => User, { nullable: true })
-  @ManyToOne(() => User, (user) => user.reviews_received, { eager: true })
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ referencedColumnName: "id", name: "refersTo_id" })
   refersTo: User;
 

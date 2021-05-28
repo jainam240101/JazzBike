@@ -91,6 +91,9 @@ export const searchUsersUtil = async ({ name, limit, pageNo }: any) => {
       },
       take: limit,
       skip: skip,
+      order: {
+        createdAt:"DESC"
+      }
     });
     return data;
   } catch (error) {

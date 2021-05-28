@@ -14,6 +14,15 @@ import {
 
 const rideValidation = async ({ userId, cycleId }: any) => {
   try {
+    const checkIfCycleIsAvailable: Cycles | undefined = await Cycles.findOne({
+      where: {
+        cycle_id: cycleId,
+        currentlyInUse: true,
+      },
+    });
+    if (checkIfCycleIsAvailable) {
+      throw new Error("A ride already in Progress");
+    }
     const checkIfRideAlreadygoing: Ride | undefined = await Ride.findOne({
       where: [
         {
@@ -30,19 +39,12 @@ const rideValidation = async ({ userId, cycleId }: any) => {
         },
       ],
     });
-    const checkIfCycleIsAvailable: Cycles | undefined = await Cycles.findOne({
-      where: {
-        cycle_id: cycleId,
-        currentlyInUse: true,
-      },
-    });
-    if (checkIfCycleIsAvailable) {
-      throw new Error("A ride already in Progress");
-    }
     if (checkIfRideAlreadygoing) {
       throw new Error("A ride already in Progress");
     }
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 export const initiateRideUtil = async ({ cycleId, userId }: any) => {

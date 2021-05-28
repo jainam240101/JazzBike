@@ -6,16 +6,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Cycles } from "./Cycles";
-import { CycleReview } from "./Cycle_Review";
-import { Ride } from "./Ride";
-import { UserReview } from "./User_Review";
-
 @Entity()
 @ObjectType()
 export class User extends BaseEntity {
@@ -43,45 +36,45 @@ export class User extends BaseEntity {
   @Column({ length: 1000 })
   Address: String;
 
-  @OneToMany(() => Ride, (ride) => ride.rider, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-    primary: true,
-  })
-  @JoinColumn({ referencedColumnName: "ride_id" })
-  ride: Ride[];
+  // @OneToMany(() => Ride, (ride) => ride.rider, {
+  //   onDelete: "CASCADE",
+  //   onUpdate: "CASCADE",
+  //   primary: true,
+  // })
+  // @JoinColumn({ referencedColumnName: "ride_id" })
+  // ride: Ride[];
 
-  @OneToMany(() => Cycles, (cycles) => cycles.owner, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-    primary: true,
-  })
-  @JoinColumn({ referencedColumnName: "cycle_id" })
-  cycles: Cycles[];
+  // @OneToMany(() => Cycles, (cycles) => cycles.owner, {
+  //   onDelete: "CASCADE",
+  //   onUpdate: "CASCADE",
+  //   primary: true,
+  // })
+  // @JoinColumn({ referencedColumnName: "cycle_id" })
+  // cycles: Cycles[];
 
-  @OneToMany(() => UserReview, (UserReview) => UserReview.saidBy, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-    primary: true,
-  })
-  @JoinColumn({ referencedColumnName: "review_id" })
-  reviews_byme: UserReview[];
+  // @OneToMany(() => UserReview, (UserReview) => UserReview.saidBy, {
+  //   onDelete: "CASCADE",
+  //   onUpdate: "CASCADE",
+  //   primary: true,
+  // })
+  // @JoinColumn({ referencedColumnName: "review_id" })
+  // reviews_byme: UserReview[];
 
-  @OneToMany(() => UserReview, (UserReview) => UserReview.refersTo, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-    primary: true,
-  })
-  @JoinColumn({ referencedColumnName: "review_id" })
-  reviews_received: UserReview[];
+  // @OneToMany(() => UserReview, (UserReview) => UserReview.refersTo, {
+  //   onDelete: "CASCADE",
+  //   onUpdate: "CASCADE",
+  //   primary: true,
+  // })
+  // @JoinColumn({ referencedColumnName: "review_id" })
+  // reviews_received: UserReview[];
 
-  @OneToMany(() => CycleReview, (cycleReview) => cycleReview.reviewer, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-    primary: true,
-  })
-  @JoinColumn({ name: "review_id" })
-  cyclesReview: CycleReview[];
+  // @OneToMany(() => CycleReview, (cycleReview) => cycleReview.reviewer, {
+  //   onDelete: "CASCADE",
+  //   onUpdate: "CASCADE",
+  //   primary: true,
+  // })
+  // @JoinColumn({ name: "review_id" })
+  // cyclesReview: CycleReview[];
 
   @Field()
   @CreateDateColumn()

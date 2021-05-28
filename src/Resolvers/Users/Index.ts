@@ -123,7 +123,7 @@ export class UserResolvers {
     try {
       const SearchData = await searchUsersUtil({ name, limit, pageNo });
       return {
-        data: [SearchData],
+        data: SearchData,
         message: "Fetch Successful",
         error: null,
       };

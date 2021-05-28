@@ -8,12 +8,9 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { CycleReview } from "./Cycle_Review";
-import { Ride } from "./Ride";
 import { User } from "./User";
 
 @Entity()
@@ -24,7 +21,7 @@ export class Cycles extends BaseEntity {
   cycle_id: string;
 
   @Field(() => User, { nullable: true })
-  @ManyToOne(() => User, (user) => user.cycles, { eager: true })
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ referencedColumnName: "id", name: "owner_id" })
   owner: User;
 
@@ -32,14 +29,14 @@ export class Cycles extends BaseEntity {
   @Column({ type: "boolean", default: false })
   currentlyInUse: boolean;
 
-  @Field(() => [CycleReview], { nullable: true })
-  @OneToMany(() => CycleReview, (CycleReview) => CycleReview.cycle, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-    primary: true,
-  })
-  @JoinColumn({ referencedColumnName: "review_id" })
-  reviews: CycleReview[];
+  // @Field(() => [CycleReview], { nullable: true })
+  // @OneToMany(() => CycleReview, (CycleReview) => CycleReview.cycle, {
+  //   onDelete: "CASCADE",
+  //   onUpdate: "CASCADE",
+  //   primary: true,
+  // })
+  // @JoinColumn({ referencedColumnName: "review_id" })
+  // reviews: CycleReview[];
 
   @Field()
   @Column()
@@ -57,13 +54,13 @@ export class Cycles extends BaseEntity {
   @Column({ type: "simple-array" })
   Photos: string[];
 
-  // @Field(() => [Ride])
-  @OneToMany(() => Ride, (ride) => ride.cycle, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-    primary: true,
-  })
-  Ride: Ride[];
+  // // @Field(() => [Ride])
+  // @OneToMany(() => Ride, (ride) => ride.cycle, {
+  //   onDelete: "CASCADE",
+  //   onUpdate: "CASCADE",
+  //   primary: true,
+  // })
+  // Ride: Ride[];
 
   @Field()
   @CreateDateColumn()

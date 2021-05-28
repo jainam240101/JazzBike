@@ -3,7 +3,6 @@
 import { User } from "../../Entities/User";
 import { UserReview } from "../../Entities/User_Review";
 import { v4 as uuidv4 } from "uuid";
-import { createQueryBuilder } from "typeorm";
 
 export const createReviewUtil = async (info: any) => {
   try {
@@ -41,11 +40,9 @@ export const updateReviewUtil = async ({ id, data }: any) => {
 
 export const deleteReviewUtil = async (id: string) => {
   try {
-    await createQueryBuilder()
-      .delete()
-      .from(UserReview)
-      .where("id = :id", { id: id })
-      .execute();
+    await UserReview.delete({
+      review_id: id,
+    });
     return "Done";
   } catch (error) {
     throw new Error("Error Occured while Deleting the Users Review");

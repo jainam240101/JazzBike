@@ -12,7 +12,7 @@ import {
 import { createCycleInput, updateCycleDetails } from "./Inputs";
 import {
   createCycleUtil,
-  getMyCycles,
+  getCycleDetails,
   updateCycleDetailsUtil,
   deleteCycleUtil,
   searchCycleUtil,
@@ -54,7 +54,26 @@ export class CycleResolver {
   @Query(() => CycleResponse)
   async getCycleDetail(@Arg("id") id: string) {
     try {
-      const data = await getMyCycles(id);
+      const data = await getCycleDetails(id);
+      return {
+        data: [data],
+        message: "Fetch Successful",
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        message: "Fetch Unsuccessful",
+        error: error.detail,
+      };
+    }
+  }
+
+  @UseMiddleware(isAuth)
+  @Query(() => CycleResponse)
+  async getMyCycles(@Ctx() ctx: MyContext) {
+    try {
+      const data = await getCycleDetails(ctx.req.session.userId);
       return {
         data: [data],
         message: "Fetch Successful",

@@ -32,7 +32,7 @@ export class Ride extends BaseEntity {
   ride_id: string;
 
   @Field(() => Cycles)
-  @ManyToOne(() => Cycles, (cycle) => cycle.Ride, {
+  @ManyToOne(() => Cycles, (cycle) => cycle.cycle_id, {
     eager: true,
     nullable: false,
   })
@@ -40,7 +40,7 @@ export class Ride extends BaseEntity {
   cycle: Cycles;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.ride, { eager: true, nullable: false })
+  @ManyToOne(() => User, (user) => user.id, { eager: true, nullable: false })
   @JoinColumn({ referencedColumnName: "id", name: "rider_id" })
   rider: User;
 
@@ -50,7 +50,7 @@ export class Ride extends BaseEntity {
 
   @Field()
   @Column({ default: "Waiting" })
-  status: String; //Waiting Accepted Rejected Completed Cancelled 
+  status: String; //Waiting Accepted Rejected Completed Cancelled
 
   @Field(() => Date, { nullable: true })
   @Column({ type: "timestamp", nullable: true })

@@ -22,12 +22,12 @@ export class CycleReview extends BaseEntity {
   review_id: string;
 
   @Field(() => Cycles)
-  @ManyToOne(() => Cycles, (cycle) => cycle.reviews, { eager: true })
+  @ManyToOne(() => Cycles, (cycle) => cycle.cycle_id, { eager: true })
   @JoinColumn({ referencedColumnName: "cycle_id", name: "cycle_id" })
   cycle: Cycles;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.cyclesReview, { eager: true })
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
   @JoinColumn({ referencedColumnName: "id", name: "reviewer_id" })
   reviewer: User;
 

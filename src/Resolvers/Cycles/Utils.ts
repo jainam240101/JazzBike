@@ -28,12 +28,27 @@ export const createCycleUtil = async ({
   }
 };
 
-export const getMyCycles = async (id: string) => {
+export const getCycleDetails = async (id: string) => {
   try {
     const cycle = await Cycles.findOne({
       relations: ["owner"],
       where: {
         cycle_id: id,
+      },
+    });
+    return cycle;
+  } catch (error) {
+    console.log(error);
+    throw new Error("No Cycle Exists!!!");
+  }
+};
+
+export const getMyCyclesUtil = async (userId: string) => {
+  try {
+    const cycle = await Cycles.findOne({
+      relations: ["owner"],
+      where: {
+        owner: userId,
       },
     });
     return cycle;
