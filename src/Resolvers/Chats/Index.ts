@@ -1,15 +1,23 @@
 /** @format */
 
 import { isAuth } from "../../Middlewares/isAuth";
+import { PubSubEngine } from "graphql-subscriptions";
 import {
   Arg,
   Ctx,
   Mutation,
+  PubSub,
   Query,
   Resolver,
+  Root,
+  Subscription,
   UseMiddleware,
 } from "type-graphql";
-import { findMyMessageInput, sendMessageInput, updateMessageInput } from "./Input";
+import {
+  findMyMessageInput,
+  sendMessageInput,
+  updateMessageInput,
+} from "./Input";
 import {
   createMessageUtil,
   deleteMessageUtil,
@@ -19,12 +27,20 @@ import {
 } from "./Utils";
 import { MyContext } from "../../Types/Context";
 import { ChatResponse, ResponseObject } from "../../Types/Response";
+import {
+  ChatNotificationPayload,
+  ChatNotification,
+  CHATNOTIFICATIONS,
+  UPDATEMESSAGES,
+  DELETEMESSAGES,
+} from "../../Types/Subscriptions";
 
 @Resolver()
 export class ChatResolver {
   @UseMiddleware(isAuth)
   @Mutation(() => ChatResponse)
   async sendMessage(
+    @PubSub() pubSub: PubSubEngine,
     @Arg("data") { message, sendingTo }: sendMessageInput,
     @Ctx() ctx: MyContext
   ) {
@@ -34,11 +50,14 @@ export class ChatResolver {
         message,
         sendingTo,
       });
-      return {
+      const response: ChatNotificationPayload = {
         data: [data],
         message: "Fetch Successfull",
         error: null,
+        userId: ctx.req.session.userId,
       };
+      await pubSub.publish(CHATNOTIFICATIONS, response);
+      return response;
     } catch (error) {
       return {
         data: null,
@@ -48,9 +67,27 @@ export class ChatResolver {
     }
   }
 
+  @Subscription(() => ChatNotification, {
+    topics: CHATNOTIFICATIONS,
+    filter: ({ args, payload }) => {
+      return args.userId === payload.data[0].receiver.id;
+    },
+  })
+  textSubscription(
+    @Arg("userId") _userId: string,
+    @Root() { data, error, message }: ChatNotificationPayload
+  ) {
+    return {
+      chat: data,
+      message: message,
+      error: error,
+    };
+  }
+
   @UseMiddleware(isAuth)
   @Mutation(() => ChatResponse)
   async updateMessage(
+    @PubSub() pubSub: PubSubEngine,
     @Arg("data") { chat_id, message }: updateMessageInput,
     @Ctx() ctx: MyContext
   ) {
@@ -60,11 +97,14 @@ export class ChatResolver {
         chat_id,
         message,
       });
-      return {
+      const response: ChatNotificationPayload = {
         data: [data],
         message: "Fetch Successfull",
         error: null,
+        userId: ctx.req.session.userId,
       };
+      await pubSub.publish(UPDATEMESSAGES, response);
+      return response;
     } catch (error) {
       return {
         data: null,
@@ -72,16 +112,47 @@ export class ChatResolver {
         error: `Error : ${error.message}`,
       };
     }
+  }
+
+  @Subscription(() => ChatNotification, {
+    topics: UPDATEMESSAGES,
+    filter: ({ args, payload }) => {
+      return (
+        args.userId === payload.data[0].receiver.id ||
+        args.userId === payload.data[0].sender.id
+      );
+    },
+  })
+  updateSubscription(
+    @Arg("userId") _userId: string,
+    @Root() { data, error, message }: ChatNotificationPayload
+  ) {
+    return {
+      chat: data,
+      message: message,
+      error: error,
+    };
   }
 
   @UseMiddleware(isAuth)
   @Mutation(() => ChatResponse)
-  async deleteMessage(@Arg("chat_id") chat_id: string, @Ctx() ctx: MyContext) {
+  async deleteMessage(
+    @PubSub() pubSub: PubSubEngine,
+    @Arg("chat_id") chat_id: string,
+    @Ctx() ctx: MyContext
+  ) {
     try {
-      await deleteMessageUtil({
+      const data = await deleteMessageUtil({
         userId: ctx.req.session.userId,
         chat_id,
       });
+      const response: ChatNotificationPayload = {
+        data: [data],
+        message: "Fetch Successfull",
+        error: null,
+        userId: ctx.req.session.userId,
+      };
+      await pubSub.publish(DELETEMESSAGES, response);
       return {
         data: null,
         message: "Fetch Successfull",
@@ -96,9 +167,32 @@ export class ChatResolver {
     }
   }
 
+  @Subscription(() => ChatNotification, {
+    topics: DELETEMESSAGES,
+    filter: ({ args, payload }) => {
+      return (
+        args.userId === payload.data[0].receiver.id ||
+        args.userId === payload.data[0].sender.id
+      );
+    },
+  })
+  deleteSubscription(
+    @Arg("userId") _userId: string,
+    @Root() { data, error, message }: ChatNotificationPayload
+  ) {
+    return {
+      chat: data,
+      message: message,
+      error: error,
+    };
+  }
+
   @UseMiddleware(isAuth)
   @Query(() => ChatResponse)
-  async findMyMessages(@Arg("data") { id,limit,pageNo}:findMyMessageInput, @Ctx() ctx: MyContext) {
+  async findMyMessages(
+    @Arg("data") { id, limit, pageNo }: findMyMessageInput,
+    @Ctx() ctx: MyContext
+  ) {
     try {
       const data = await getMyMessages({
         userId: ctx.req.session.userId,

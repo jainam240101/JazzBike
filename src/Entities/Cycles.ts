@@ -8,9 +8,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Ride } from "./Ride";
 import { User } from "./User";
 
 @Entity()
@@ -54,13 +56,13 @@ export class Cycles extends BaseEntity {
   @Column({ type: "simple-array" })
   Photos: string[];
 
-  // // @Field(() => [Ride])
-  // @OneToMany(() => Ride, (ride) => ride.cycle, {
-  //   onDelete: "CASCADE",
-  //   onUpdate: "CASCADE",
-  //   primary: true,
-  // })
-  // Ride: Ride[];
+  // @Field(() => [Ride])
+  @OneToMany(() => Ride, (ride) => ride.cycle, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+    primary: true,
+  })
+  Ride: Ride[];
 
   @Field()
   @CreateDateColumn()

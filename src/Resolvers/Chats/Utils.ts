@@ -121,9 +121,10 @@ export const deleteMessageUtil = async ({ userId, chat_id }: any) => {
     if (data?.sender.id !== userId) {
       throw new Error("Cannot Update it");
     }
-    return Chats.delete({
+    await Chats.delete({
       chatId: chat_id,
     });
+    return data
   } catch (error) {
     throw new Error("Cannot Update it");
   }

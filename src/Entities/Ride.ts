@@ -32,7 +32,7 @@ export class Ride extends BaseEntity {
   ride_id: string;
 
   @Field(() => Cycles)
-  @ManyToOne(() => Cycles, (cycle) => cycle.cycle_id, {
+  @ManyToOne(() => Cycles, (cycle) => cycle.Ride, {
     eager: true,
     nullable: false,
   })
