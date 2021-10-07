@@ -1,9 +1,12 @@
 /** @format */
 
-import React from "react";
-import Link from "next/link";
+import React, { useState } from "react";
+import Login from "../Login_SignUp/Login";
+import SignUp from "../Login_SignUp/SignUp";
 
 const Navbar = () => {
+  const [loginModal, setloginModal] = useState(false);
+  const [signUpModal, setsignUpModal] = useState(false);
   return (
     <div className='bg-blue-800 flex justify-between px-44 py-4'>
       <div className=''>
@@ -15,17 +18,19 @@ const Navbar = () => {
         </div>
       </div>
       <div className='flex items-center'>
-        <Link href='/login'>
-          <a className='text-white text-xl font-OpenSans hover:text-green-500'>
-            Login
-          </a>
-        </Link>
-        <Link href='/signup'>
-          <a className='text-white ml-5 text-xl font-OpenSans hover:text-green-500'>
-            Sign Up
-          </a>
-        </Link>
+        <div
+          onClick={() => setloginModal(true)}
+          className='text-white cursor-pointer text-xl font-OpenSans hover:text-green-500'>
+          Login
+        </div>
+        <div
+          onClick={() => setsignUpModal(true)}
+          className='text-white cursor-pointer ml-5 text-xl font-OpenSans hover:text-green-500'>
+          Sign Up
+        </div>
       </div>
+      {loginModal && <Login func={setloginModal} />}
+      {signUpModal && <SignUp func={setsignUpModal} />}
     </div>
   );
 };
