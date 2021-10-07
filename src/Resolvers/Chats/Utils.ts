@@ -3,9 +3,6 @@
 import { Chats } from "../../Entities/Chats";
 import { User } from "../../Entities/User";
 import { v4 as uuidv4 } from "uuid";
-// import { getManager } from "typeorm";
-// import { getManager } from "typeorm";
-// import { Brackets, getRepository } from "typeorm";
 
 export const createMessageUtil = async ({
   userId,

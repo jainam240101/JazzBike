@@ -38,12 +38,21 @@ export const updateReviewUtil = async ({ id, data }: any) => {
   }
 };
 
-export const deleteReviewUtil = async (id: string) => {
+export const deleteReviewUtil = async ({ id, userId }: any) => {
   try {
-    await UserReview.delete({
-      review_id: id,
+    const data: UserReview | undefined = await UserReview.findOne({
+      relations: ["saidBy"],
+      where: {
+        review_id: id,
+      },
     });
-    return "Done";
+    if (data === undefined) {
+      throw new Error();
+    }
+    if (data.saidBy.id !== userId) {
+      throw new Error();
+    }
+    return data;
   } catch (error) {
     throw new Error("Error Occured while Deleting the Users Review");
   }

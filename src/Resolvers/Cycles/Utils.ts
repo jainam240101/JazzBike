@@ -83,12 +83,15 @@ export const updateCycleDetailsUtil = async (info: any) => {
 
 export const deleteCycleUtil = async (info: any) => {
   try {
-    const cycle: any = await Cycles.findOne({
+    const cycle: Cycles | undefined = await Cycles.findOne({
       relations: ["owner"],
       where: {
         cycle_id: info.cycleId,
       },
     });
+    if (cycle === undefined) {
+      throw new Error("No cycle found");
+    }
     // console.log(info);
     if (info.userId !== cycle.owner.id) {
       throw new Error("It failed while updating");
@@ -96,7 +99,7 @@ export const deleteCycleUtil = async (info: any) => {
     await Cycles.delete({
       cycle_id: info.cycleId,
     });
-    return "Success";
+    return cycle;
   } catch (error) {
     throw new Error("Error Occured while Deleting a User");
   }

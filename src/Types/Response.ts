@@ -64,6 +64,9 @@ export class RideResponse {
   @Field()
   message: string;
 
+  @Field({ defaultValue: null, nullable: true })
+  status: string;
+
   @Field(() => String, { nullable: true })
   error: string | null;
 }

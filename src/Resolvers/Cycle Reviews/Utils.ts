@@ -75,7 +75,7 @@ export const deleteReviewUtil = async ({ userId, reviewId }: any) => {
     await CycleReview.delete({
       review_id: reviewId,
     });
-    return "Success";
+    return review_data;
   } catch (error) {
     throw new Error("Failed To Delete");
   }

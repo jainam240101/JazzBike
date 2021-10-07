@@ -122,12 +122,12 @@ export class CycleResolver {
   @Mutation(() => CycleResponse)
   async deleteCycle(@Arg("cycleId") cycleId: string, @Ctx() ctx: MyContext) {
     try {
-      await deleteCycleUtil({
+      const data =await deleteCycleUtil({
         cycleId: cycleId,
         userId: ctx.req.session.userId,
       });
       return {
-        data: "Success",
+        data: [data],
         message: "Fetch Successful",
         error: null,
       };

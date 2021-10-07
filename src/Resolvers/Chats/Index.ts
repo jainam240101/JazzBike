@@ -29,7 +29,6 @@ import { MyContext } from "../../Types/Context";
 import { ChatResponse, ResponseObject } from "../../Types/Response";
 import {
   ChatNotificationPayload,
-  ChatNotification,
   CHATNOTIFICATIONS,
   UPDATEMESSAGES,
   DELETEMESSAGES,
@@ -67,7 +66,7 @@ export class ChatResolver {
     }
   }
 
-  @Subscription(() => ChatNotification, {
+  @Subscription(() => ChatResponse, {
     topics: CHATNOTIFICATIONS,
     filter: ({ args, payload }) => {
       return args.userId === payload.data[0].receiver.id;
@@ -78,7 +77,7 @@ export class ChatResolver {
     @Root() { data, error, message }: ChatNotificationPayload
   ) {
     return {
-      chat: data,
+      data: data,
       message: message,
       error: error,
     };
@@ -114,7 +113,7 @@ export class ChatResolver {
     }
   }
 
-  @Subscription(() => ChatNotification, {
+  @Subscription(() => ChatResponse, {
     topics: UPDATEMESSAGES,
     filter: ({ args, payload }) => {
       return (
@@ -128,7 +127,7 @@ export class ChatResolver {
     @Root() { data, error, message }: ChatNotificationPayload
   ) {
     return {
-      chat: data,
+      data: data,
       message: message,
       error: error,
     };
@@ -153,11 +152,7 @@ export class ChatResolver {
         userId: ctx.req.session.userId,
       };
       await pubSub.publish(DELETEMESSAGES, response);
-      return {
-        data: null,
-        message: "Fetch Successfull",
-        error: null,
-      };
+      return response;
     } catch (error) {
       return {
         data: null,
@@ -167,7 +162,7 @@ export class ChatResolver {
     }
   }
 
-  @Subscription(() => ChatNotification, {
+  @Subscription(() => ChatResponse, {
     topics: DELETEMESSAGES,
     filter: ({ args, payload }) => {
       return (
@@ -181,7 +176,7 @@ export class ChatResolver {
     @Root() { data, error, message }: ChatNotificationPayload
   ) {
     return {
-      chat: data,
+      data: data,
       message: message,
       error: error,
     };
